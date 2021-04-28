@@ -1,5 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// const crypto = require('crypto');
+// require('dotenv').config();
+
+// const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 
 function getUsers(req, res) {
@@ -26,7 +30,7 @@ function createUser(req, res) {
 
 function Login(req, res) {
   const { email, password } = req.body;
-  User.findOne({ email })
+  User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Incorrect password or email'));
@@ -36,7 +40,7 @@ function Login(req, res) {
           if (!match) {
             return Promise.reject(new Error('Incorrect password or email'));
           }
-          const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn: '7d' });
           res.send({ token });
         });
     })

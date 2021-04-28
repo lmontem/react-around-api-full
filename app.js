@@ -9,6 +9,7 @@ const card = require('./routes/cards.js');
 const {
   login, createUser,
 } = require('./controllers/usersControllers');
+const auth = require('./middleware/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -19,19 +20,12 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6065e2dd6d32f422804c91a4', // paste the _id of the test user created in the previous step
-  };
-
-  next();
-});
-
 app.use(user);
 app.use(card);
 
 app.post('/signin', login);
 app.post('/signup', jsonParser, createUser);
+app.get('/users/me', auth);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
