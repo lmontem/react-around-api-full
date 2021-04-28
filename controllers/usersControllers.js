@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 function getUsers(req, res) {
@@ -13,13 +14,34 @@ function createUser(req, res) {
   } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, hash,
+      name, about, avatar, email, password: hash,
     }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidatorError') { return res.status(400).send({ message: 'Invalid user' }); }
       if (err.name === 'NotFound') { return res.status(404).send({ message: 'User not found' }); }
       return res.status(500).send({ message: 'Error' });
+    });
+}
+
+function Login(req, res) {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Incorrect password or email'));
+      }
+      return bcrypt.compare(password, user.password)
+        .then((match) => {
+          if (!match) {
+            return Promise.reject(new Error('Incorrect password or email'));
+          }
+          const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+          res.send({ token });
+        });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
     });
 }
 
@@ -90,5 +112,5 @@ function updateAvatar(req, res) {
 }
 
 module.exports = {
-  getUsers, createUser, getUserById, updateProfile, updateAvatar,
+  getUsers, createUser, getUserById, updateProfile, updateAvatar, Login,
 };
