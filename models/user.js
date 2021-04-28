@@ -7,16 +7,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Jacques Cousteau',
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Explorer',
   },
   avatar: {
     type: String,
     required: true,
+    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
       validator(v) {
         return /^(https|http?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi.test(v);
@@ -39,8 +42,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: 8,
+
   },
 });
 module.exports = mongoose.model('user', userSchema);
