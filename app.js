@@ -1,8 +1,14 @@
 const express = require('express');
 
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const jsonParser = bodyParser.json();
 const user = require('./routes/users.js');
 const card = require('./routes/cards.js');
+const {
+  login, createUser,
+} = require('./controllers/usersControllers');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -23,6 +29,9 @@ app.use((req, res, next) => {
 
 app.use(user);
 app.use(card);
+
+app.post('/signin', login);
+app.post('/signup', jsonParser, createUser);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

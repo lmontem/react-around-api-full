@@ -3,10 +3,10 @@ const bodyParser = require('body-parser');
 
 const jsonParser = bodyParser.json();
 const {
-  getUsers, createUser, getUserById, updateProfile, updateAvatar,
+  getUsers, getUserById, updateProfile, updateAvatar,
 } = require('../controllers/usersControllers');
 
-router.post('/users', jsonParser, createUser);
+// router.post('/users', jsonParser, createUser);
 
 router.get('/users', getUsers);
 
