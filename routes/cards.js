@@ -5,16 +5,16 @@ const jsonParser = bodyParser.json();
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cardsControllers');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/auth');
 
-router.get('/cards', auth, getCards);
+router.get('/cards', getCards);
 
-router.post('/cards', auth, jsonParser, createCard);
+router.post('/cards', jsonParser, createCard);
 
-router.delete('/cards/:cardId', auth, deleteCard);
+router.delete('/cards/:cardId', deleteCard);
 
-router.put('/cards/:cardId/likes', auth, likeCard);
+router.put('/cards/:cardId/likes', likeCard);
 
-router.delete('/cards/:cardId/likes', auth, dislikeCard);
+router.delete('/cards/:cardId/likes', dislikeCard);
 
 module.exports = router;

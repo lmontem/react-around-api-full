@@ -6,10 +6,10 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const user = require('./routes/users.js');
 const card = require('./routes/cards.js');
+const { auth } = require('./middleware/auth.js');
 const {
-  login, createUser,
+  Login, createUser, getUserById,
 } = require('./controllers/usersControllers');
-const auth = require('./middleware/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -22,10 +22,11 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(user);
 app.use(card);
+// app.use(auth);
 
-app.post('/signin', login);
+app.post('/signin', jsonParser, Login);
 app.post('/signup', jsonParser, createUser);
-app.get('/users/me', auth);
+app.get('/users/me', auth, getUserById);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

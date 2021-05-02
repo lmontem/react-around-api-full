@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// const { auth } = require('../middleware/auth');
+require('cookie-parser');
 // const crypto = require('crypto');
 // require('dotenv').config();
 
@@ -40,7 +42,8 @@ function Login(req, res) {
           if (!match) {
             return Promise.reject(new Error('Incorrect password or email'));
           }
-          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, 'secret key');
+          res.cookie('token', token, { httpOnly: true }, { expires: new Date(Date.now() + 604800000) });
           res.send({ token });
         });
     })
@@ -50,7 +53,7 @@ function Login(req, res) {
 }
 
 function getUserById(req, res) {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'User ID not found' });

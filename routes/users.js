@@ -5,7 +5,7 @@ const jsonParser = bodyParser.json();
 const {
   getUsers, getUserById, updateProfile, updateAvatar,
 } = require('../controllers/usersControllers');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 router.get('/users', auth, getUsers);
 
