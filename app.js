@@ -22,7 +22,6 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(user);
 app.use(card);
-// app.use(auth);
 
 app.post('/signin', jsonParser, Login);
 app.post('/signup', jsonParser, createUser);
@@ -38,6 +37,11 @@ app.post('*', (req, res) => {
 
 app.delete('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.statusCode === 500 ? 'Error from server' : err.message });
+  next();
 });
 
 app.listen(PORT, () => {

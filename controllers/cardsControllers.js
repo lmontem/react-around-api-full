@@ -1,22 +1,23 @@
 const Card = require('../models/card');
+const { NotFoundError, InvalidError } = require('../middleware/errorHandling');
 
-function getCards(req, res) {
+function getCards(req, res, next) {
   Card.find({})
     .then((card) => { res.status(200).send({ data: card }); })
-    .catch(() => res.status(500).send({ message: 'Error' }));
+    .catch(next);
 }
 
-function createCard(req, res) {
+function createCard(req, res, next) {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') { return res.status(400).send({ message: 'Invalid data' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'ValidationError') { throw new InvalidError('Invalid data'); }
+    })
+    .catch(next);
 }
 
-function deleteCard(req, res) {
+function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
@@ -26,13 +27,13 @@ function deleteCard(req, res) {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid card' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'Card not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'CastError') { throw new InvalidError('Invalid card'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('Card not found'); }
+    })
+    .catch(next);
 }
 
-function likeCard(req, res) {
+function likeCard(req, res, next) {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
@@ -46,13 +47,13 @@ function likeCard(req, res) {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid card' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'Card not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'CastError') { throw new InvalidError('Invalid card'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('Card not found'); }
+    })
+    .catch(next);
 }
 
-function dislikeCard(req, res) {
+function dislikeCard(req, res, next) {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // remove _id from the array
@@ -66,10 +67,10 @@ function dislikeCard(req, res) {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid card' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'Card not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'CastError') { throw new InvalidError('Invalid card'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('Card not found'); }
+    })
+    .catch(next);
 }
 
 module.exports = {

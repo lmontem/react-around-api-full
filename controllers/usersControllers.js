@@ -1,20 +1,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const { auth } = require('../middleware/auth');
 require('cookie-parser');
 // const crypto = require('crypto');
 // require('dotenv').config();
 
 // const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
+const { NotFoundError, InvalidError, AuthError } = require('../middleware/errorHandling');
 
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Error' }));
+    .catch(next);
 }
 
-function createUser(req, res) {
+function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -24,13 +24,13 @@ function createUser(req, res) {
     }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidatorError') { return res.status(400).send({ message: 'Invalid user' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'User not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'ValidatorError') { throw new InvalidError('Invalid user'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
+    })
+    .catch(next);
 }
 
-function Login(req, res) {
+function Login(req, res, next) {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -47,12 +47,13 @@ function Login(req, res) {
           res.send({ token });
         });
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+    .catch(() => {
+      throw new AuthError('Authorization Error');
+    })
+    .catch(next);
 }
 
-function getUserById(req, res) {
+function getUserById(req, res, next) {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
@@ -62,13 +63,13 @@ function getUserById(req, res) {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid user' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'User not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (err.name === 'CastError') { throw new InvalidError('Invalid user'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
+    })
+    .catch(next);
 }
 
-function updateProfile(req, res) {
+function updateProfile(req, res, next) {
   User.findByIdAndUpdate(
     { _id: req.user._id },
     { name: req.body.name, about: req.body.about },
@@ -86,14 +87,14 @@ function updateProfile(req, res) {
       }
     })
     .catch((err) => {
-      if (req.body === null) { return res.status(400).send({ message: 'Empty request' }); }
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid user' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'User not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (req.body === null) { throw new InvalidError('Empty request'); }
+      if (err.name === 'CastError') { throw new InvalidError('Invalid user'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
+    })
+    .catch(next);
 }
 
-function updateAvatar(req, res) {
+function updateAvatar(req, res, next) {
   User.findByIdAndUpdate(
     { _id: req.user._id },
     { avatar: req.body.avatar },
@@ -111,11 +112,11 @@ function updateAvatar(req, res) {
       }
     })
     .catch((err) => {
-      if (req.body === null) { return res.status(400).send({ message: 'Empty request' }); }
-      if (err.name === 'CastError') { return res.status(400).send({ message: 'Invalid user' }); }
-      if (err.name === 'NotFound') { return res.status(404).send({ message: 'User not found' }); }
-      return res.status(500).send({ message: 'Error' });
-    });
+      if (req.body === null) { throw new InvalidError('Empty request'); }
+      if (err.name === 'CastError') { throw new InvalidError('Invalid user'); }
+      if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
+    })
+    .catch(next);
 }
 
 module.exports = {
