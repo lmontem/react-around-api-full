@@ -24,6 +24,7 @@ function createUser(req, res, next) {
     }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
+      if (err.code === 11000) { throw new InvalidError('Duplicate email'); }
       if (err.name === 'ValidationError') { throw new InvalidError('Invalid user'); }
       if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
     })

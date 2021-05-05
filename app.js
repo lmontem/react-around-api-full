@@ -8,6 +8,7 @@ const { errors } = require('celebrate');
 const user = require('./routes/users.js');
 const card = require('./routes/cards.js');
 const { auth } = require('./middleware/auth.js');
+const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const {
   Login, createUser, getUserById,
@@ -24,6 +25,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(user);
 app.use(card);
+app.use(requestLogger);
 
 app.post('/signin', jsonParser, Login);
 app.post('/signup', jsonParser, createUser);
@@ -32,6 +34,8 @@ app.get('/users/me', auth, getUserById);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
