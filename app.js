@@ -40,7 +40,7 @@ app.delete('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  res.status(err.statusCode).send({ message: err.statusCode === 500 ? 'Error from server' : err.message });
+  res.status(err.statusCode).send({ message: (err.statusCode === 500) ? 'Error from server' : err.message });
   next();
 });
 

@@ -24,7 +24,7 @@ function createUser(req, res, next) {
     }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidatorError') { throw new InvalidError('Invalid user'); }
+      if (err.name === 'ValidationError') { throw new InvalidError('Invalid user'); }
       if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
     })
     .catch(next);
@@ -87,7 +87,10 @@ function updateProfile(req, res, next) {
       }
     })
     .catch((err) => {
+      console.log(err.name);
+      console.log(req.body);
       if (req.body === null) { throw new InvalidError('Empty request'); }
+      if (err.name === 'ValidationError') { throw new InvalidError('Invalid user'); }
       if (err.name === 'CastError') { throw new InvalidError('Invalid user'); }
       if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
     })
