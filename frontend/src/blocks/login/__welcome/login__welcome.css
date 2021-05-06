@@ -1,0 +1,20 @@
+.login__welcome{
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 29px;
+    text-align: center;
+    min-width: 358px;
+    margin-top: 60px;
+    margin-bottom: 50px;
+
+}
+
+@media screen and (max-width: 425px) {
+    .login__welcome{
+        font-size: 20px;
+        line-height: 24px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        min-width: 260px;
+    }
+}

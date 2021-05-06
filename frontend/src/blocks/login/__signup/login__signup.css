@@ -1,0 +1,14 @@
+.login__signup{
+    text-align: center;
+    font-size: 14px;
+    line-height: 17px;
+    color: #fff;
+    margin: 0;
+}
+
+@media screen and (max-width: 425px) {
+    .login__signup{
+        font-size: 12px;
+        line-height: 15px;
+    }
+}

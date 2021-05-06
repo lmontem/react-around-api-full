@@ -5,8 +5,10 @@ const bodyParser = require('body-parser');
 
 const jsonParser = bodyParser.json();
 const { errors } = require('celebrate');
+const cors = require('cors');
 const user = require('./routes/users.js');
 const card = require('./routes/cards.js');
+
 const { auth } = require('./middleware/auth.js');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
@@ -23,6 +25,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
 app.use(user);
 app.use(card);
 app.use(requestLogger);

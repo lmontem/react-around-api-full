@@ -1,0 +1,16 @@
+.popup__image-title{
+    align-self:flex-start;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 15px;
+    padding-top: 10px;
+    margin-left: 40px;
+}
+
+
+
+@media screen and (max-width: 580px){
+    .popup__image-title{
+    margin-left: 30px;
+    }
+}

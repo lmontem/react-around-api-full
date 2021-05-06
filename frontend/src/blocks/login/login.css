@@ -1,0 +1,9 @@
+@import url('./__welcome/login__welcome.css');
+@import url('./__form/login__form.css');
+@import url('./__input/login__input.css');
+@import url('./__btn/login__btn.css');
+@import url('./__signup/login__signup.css');
+
+.login{
+    margin: auto;
+}

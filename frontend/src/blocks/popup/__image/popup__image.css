@@ -1,0 +1,29 @@
+.popup__image{
+    
+    max-width: 816px;
+    max-height: 540px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+@media screen and (max-width: 880px){
+    .popup__image{
+        max-width: 500px;
+        
+    }
+}
+
+@media screen and (max-width: 580px){
+    .popup__image{
+    max-width: 350px;    
+    margin-left: 30px;
+    margin-right: 30px;
+    }
+}
+
+@media screen and (max-width: 425px){
+    .popup__image{
+    max-width: 240px;    
+    
+    }
+}

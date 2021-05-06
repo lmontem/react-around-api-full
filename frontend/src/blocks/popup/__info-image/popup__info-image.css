@@ -1,0 +1,9 @@
+.popup__info-image{
+    margin-top: 60px;
+}
+
+@media screen and (max-screen: 425px) {
+    .popup__info-image{
+    margin-top: 50px;
+    }
+}
