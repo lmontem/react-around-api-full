@@ -5,11 +5,13 @@ const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
   console.log(req.headers);
-  const authorization = req.headers.authorization;
+  const authorization = req.headers.cookie;
   if (!authorization) {
     return res.status(401).send({ message: 'Authorization required' });
   }
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization.replace('token=', '');
+  token = token.replace('Bearer ', '');
+  console.log(token);
   let payload;
   try {
     payload = jwt.verify(token, 'secret key');
