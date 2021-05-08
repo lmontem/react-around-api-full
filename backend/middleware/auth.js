@@ -10,7 +10,7 @@ function auth(req, res, next) {
     return res.status(401).send({ message: 'Authorization required' });
   }
   const token = authorization.replace('token=', '');
-  token = token.replace('Bearer ', '');
+ 
   console.log(token);
   let payload;
   try {
