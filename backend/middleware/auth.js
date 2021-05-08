@@ -5,12 +5,12 @@ const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
   console.log(req.headers);
-  const authorization = req.headers.cookie;
+  const authorization = req.headers.authorization;
   if (!authorization) {
     return res.status(401).send({ message: 'Authorization required' });
   }
   const token = authorization.replace('token=', '');
- 
+
   console.log(token);
   let payload;
   try {

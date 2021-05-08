@@ -47,16 +47,17 @@ export const authorize = (email, password) => {
 }
 
 export const checkToken = (token) => {
+    //console.log(token);
     return fetch(`${BASE_URL}/users/me`, {
         method: 'GET',
         headers: {
-            'Accept': 'application/json',
+            "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": `token=${token}`
         }
     })
         .then(res => {
-
+            //console.log(res);
             return res.json()
         })
         .then(data => data)        

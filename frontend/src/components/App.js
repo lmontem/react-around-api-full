@@ -5,7 +5,7 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import ImagePopup from './ImagePopup.js';
 import { api } from '../utils/api.js';
-import CurrentUserContext from '../contexts/CurrentUserContext.js';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
@@ -39,14 +39,16 @@ function App() {
     const history = useHistory();
     const [toolTipMessage, setToolTipMessage] = React.useState('');
     const [toolTipImage, setToolTipImage] = React.useState('');
-    const [jwt, setJwt] = React.useState(localStorage.getItem('jwt'));
-
+    //const [jwt, setJwt] = React.useState(localStorage.getItem('jwt'));
+    
     React.useEffect(() => {
+        //debugger;
         handleCheckToken();
     }, []);
 
     //get initial cards and user info
     React.useEffect(() => {
+        //debugger;
         api.getAllInfo()
             .then(([userData, initialCardList]) => {
                 setCurrentUser(userData.data);
@@ -137,7 +139,8 @@ function App() {
     function handleAddPlaceSubmit(name, link) {
         api.addCard({ name, link })
             .then((newCard) => {
-                setCards([newCard, ...cards]);
+                console.log(newCard);
+                setCards([newCard.data, ...cards]);
             })
             .then(() => { closeAllPopups() })
             .catch(err => console.log("Error: " + err));
@@ -145,7 +148,7 @@ function App() {
 
     //login 
     function handleLogin(email, password) {
-        
+        //debugger;
         auth
             .authorize(email, password)
            
@@ -154,6 +157,7 @@ function App() {
                 handleCheckToken();
                 
                 history.push('/');
+                window.location.reload();
             })
             
             .catch(res => {
@@ -167,6 +171,7 @@ function App() {
     }
 
     function handleRegister(email, password) {
+        //debugger;
         auth.register(email, password)
             .then(res => {
                
@@ -197,20 +202,23 @@ function App() {
     }
 
     function handleCheckToken() {
-        //const jwt = localStorage.getItem('jwt')
-        
+        //debugger;
+        const jwt = localStorage.getItem('jwt')
+        //console.log(jwt);
         if (jwt) {
             auth
                 .checkToken(jwt)               
                 .then(res => {
                     if (res) {                                               
-                        
+                        //console.log(res);
+                        console.log(currentUser);
                         //const userEmail = res.data.email;
                         setUserEmail(res.data.email);
                         setUserName(res.data.name);
                         setUserAvatar(res.data.avatar);
-                        setUserAbout(res.data.about);
-                        setLoggedIn(true);                        
+                        setUserAbout(res.data.about);  
+                        setLoggedIn(true); 
+                        console.log(currentUser);                    
                         history.push('/')
                     }
                 }
@@ -250,9 +258,6 @@ function App() {
                             handleCardDelete={handleCardDelete}
                             onCardLike={(card) => { handleCardLike(card) }}
                             handleCardLike={handleCardLike}
-                            avatar={userAvatar}
-                            name={userName}
-                            about={userAbout}
                         />
                     
                     <Footer />
