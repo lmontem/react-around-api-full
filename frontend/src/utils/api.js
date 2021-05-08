@@ -110,13 +110,14 @@ class Api {
     changeLikeCardStatus(cardId, like) {
         //PUT AND DELETE
         const whichMethod = like ? "DELETE" : "PUT";
-        return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+        //console.log(whichMethod);
+        return fetch(this._baseUrl + '/cards/' + cardId + '/likes/', {
             method: whichMethod,
             headers: this._headers,
 
         })
             .then(res => {
-
+                //console.log(res);
                 if (res.ok) {
                     return res.json();//this makes object out of response
                 }
@@ -126,16 +127,17 @@ class Api {
     }
 }
 
+const jwt = localStorage.getItem('jwt');
 
 const api = new Api({
-    baseUrl: "https://around.nomoreparties.co/v1/group-8",
+    baseUrl: "http://localhost:3000",
     headers: {
-        authorization: "36dac5ff-0396-44c7-b439-6ad6e17c0bf0",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
     }
 });
 
-
+//"https://around.nomoreparties.co/v1/group-8"
 
 
 

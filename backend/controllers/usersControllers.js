@@ -18,6 +18,7 @@ function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
+  console.log(req.body);
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -43,8 +44,8 @@ function Login(req, res, next) {
           if (!match) {
             return Promise.reject(new Error('Incorrect password or email'));
           }
-          const token = jwt.sign({ _id: user._id }, 'secret key');
-          res.cookie('token', token, { httpOnly: true }, { expires: new Date(Date.now() + 604800000) });
+          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn : "7d" } );
+          res.cookie('token', token, { httpOnly: true });
           res.send({ token });
         });
     })

@@ -1,6 +1,6 @@
 
-export const BASE_URL = 'https://register.nomoreparties.co'
-
+export const BASE_URL = "http://localhost:3000";
+//'https://register.nomoreparties.co'
 export const register = (email, password) => {
 
     return fetch(`${BASE_URL}/signup`, {
@@ -12,8 +12,8 @@ export const register = (email, password) => {
         body: JSON.stringify({ email, password })
     })
         .then((res) => {
-            console.log(res)
-            if (res.status === 201) {
+            //console.log(res)
+            if (res.status === 201 || res.status === 200) {
                 return res.json();
             }
         })
@@ -25,10 +25,12 @@ export const authorize = (email, password) => {
 
     return fetch(`${BASE_URL}/signin`, {
         method: 'POST',
+        
         headers: {
             'Accept': 'application/json',
             "Content-Type": "application/json"
         },
+        
         body: JSON.stringify({ email, password })
     })
         .then(res => {

@@ -33,9 +33,13 @@ function App() {
     const [cards, setCards] = React.useState([]);
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [userEmail, setUserEmail] = React.useState('');
+    const [userAvatar, setUserAvatar] = React.useState('');
+    const [userName, setUserName] = React.useState('');
+    const [userAbout, setUserAbout] = React.useState('');
     const history = useHistory();
     const [toolTipMessage, setToolTipMessage] = React.useState('');
     const [toolTipImage, setToolTipImage] = React.useState('');
+    const [jwt, setJwt] = React.useState(localStorage.getItem('jwt'));
 
     React.useEffect(() => {
         handleCheckToken();
@@ -45,11 +49,13 @@ function App() {
     React.useEffect(() => {
         api.getAllInfo()
             .then(([userData, initialCardList]) => {
-                setCurrentUser(userData);
+                setCurrentUser(userData.data);
+                
                 return (initialCardList);
             })
             .then((res) => {
-                setCards(res);
+
+                setCards(res.data);
             })
             .catch(err => console.log("Error: " + err));
     }, [])
@@ -86,11 +92,13 @@ function App() {
     }
     //sends like info to api
     function handleCardLike(card) {
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
-
+        //console.log(currentUser);
+        const isLiked = card.likes.some(i => i === currentUser._id);
+        
         api.changeLikeCardStatus(card._id, isLiked)
             .then((newCard) => {
-                const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+                console.log(newCard);
+                const newCards = cards.map((c) => c._id === card._id ? newCard.data : c);
                 setCards(newCards);
             })
             .catch(err => console.log("Error: " + err));
@@ -111,7 +119,7 @@ function App() {
     function handleUpdateUser(name, about) {
         api.changeUserInfo({ name, about })
             .then((userData) => {
-                setCurrentUser(userData)
+                setCurrentUser(userData.data)
             })
             .then(closeAllPopups)
             .catch(err => console.log("Error: " + err));
@@ -120,7 +128,7 @@ function App() {
     function handleUpdateAvatar(newAvatar) {
         api.setAvatar(newAvatar)
             .then((userData) => {
-                setCurrentUser(userData)
+                setCurrentUser(userData.data)
             })
             .then(closeAllPopups)
             .catch(err => console.log("Error: " + err));
@@ -189,7 +197,7 @@ function App() {
     }
 
     function handleCheckToken() {
-        const jwt = localStorage.getItem('jwt')
+        //const jwt = localStorage.getItem('jwt')
         
         if (jwt) {
             auth
@@ -197,8 +205,11 @@ function App() {
                 .then(res => {
                     if (res) {                                               
                         
-                        const userEmail = res.data.email;
-                        setUserEmail(userEmail);
+                        //const userEmail = res.data.email;
+                        setUserEmail(res.data.email);
+                        setUserName(res.data.name);
+                        setUserAvatar(res.data.avatar);
+                        setUserAbout(res.data.about);
                         setLoggedIn(true);                        
                         history.push('/')
                     }
@@ -219,7 +230,8 @@ function App() {
                         </Route>
                         <Route path='/signin'>
                             <Header link={'/signup'} text={"Sign Up"} />
-                            <Login handleLogin={handleLogin} />
+                            <Login handleLogin={handleLogin}
+                             />
                         </Route>
                         <Header link={'/signin'} text={"Log out"} userEmail={userEmail} handleSignOut={handleSignOut} />
                         </Switch>
@@ -238,6 +250,9 @@ function App() {
                             handleCardDelete={handleCardDelete}
                             onCardLike={(card) => { handleCardLike(card) }}
                             handleCardLike={handleCardLike}
+                            avatar={userAvatar}
+                            name={userName}
+                            about={userAbout}
                         />
                     
                     <Footer />
