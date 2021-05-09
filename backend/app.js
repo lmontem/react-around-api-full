@@ -33,6 +33,11 @@ app.use(requestLogger);
 app.post('/signin', jsonParser, Login);
 app.post('/signup', jsonParser, createUser);
 app.get('/users/me', auth, getUserById);
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
 
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
