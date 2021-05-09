@@ -15,3 +15,11 @@ All other directories are optional and may be created by the developer if necess
 `npm run start` — to launch the server.
 
 `npm run dev` — to launch the server with the hot reload feature.
+
+## Internet access
+
+`lmontem.students.nomoreparties.site` - Frontend URL
+
+`api.lmontem.students.nomoreparties.site` - API URL
+
+`52.255.203.113` - Direct IP address
