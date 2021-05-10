@@ -20,8 +20,6 @@ function Card(props) {
         `card__delete-btn ${isOwn ? 'card__delete-btn_visible' : 'card__delete-btn_hidden'}`
     );
     // Check if the card was liked by the current user
-    console.log(props.card);
-    console.log(currentUser);
     const isLiked = props.card.likes.some(i => i === currentUser._id);
 
     // Create a variable which you then set in `className` for the like button

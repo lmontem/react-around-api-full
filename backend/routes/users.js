@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const bodyParser = require('body-parser');
+
+router.use(bodyParser.json());
 
 const {
   getUsers, getUserById, updateProfile, updateAvatar,

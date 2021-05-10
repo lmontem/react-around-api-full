@@ -99,7 +99,6 @@ function App() {
         
         api.changeLikeCardStatus(card._id, isLiked)
             .then((newCard) => {
-                console.log(newCard);
                 const newCards = cards.map((c) => c._id === card._id ? newCard.data : c);
                 setCards(newCards);
             })
@@ -139,7 +138,6 @@ function App() {
     function handleAddPlaceSubmit(name, link) {
         api.addCard({ name, link })
             .then((newCard) => {
-                console.log(newCard);
                 setCards([newCard.data, ...cards]);
             })
             .then(() => { closeAllPopups() })
@@ -210,15 +208,12 @@ function App() {
                 .checkToken(jwt)               
                 .then(res => {
                     if (res) {                                               
-                        //console.log(res);
-                        console.log(currentUser);
                         //const userEmail = res.data.email;
                         setUserEmail(res.data.email);
                         setUserName(res.data.name);
                         setUserAvatar(res.data.avatar);
                         setUserAbout(res.data.about);  
-                        setLoggedIn(true); 
-                        console.log(currentUser);                    
+                        setLoggedIn(true);                    
                         history.push('/')
                     }
                 }
