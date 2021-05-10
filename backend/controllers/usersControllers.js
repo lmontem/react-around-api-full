@@ -4,7 +4,7 @@ require('cookie-parser');
 // const crypto = require('crypto');
 // require('dotenv').config();
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const {
   NotFoundError, InvalidError, AuthError, MongoError,
@@ -48,7 +48,7 @@ function Login(req, res, next) {
           if (!match) {
             return Promise.reject(new Error('Incorrect password or email'));
           }
-          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
           // res.cookie('token', token, { httpOnly: true });
           res.send({ token });
         });
@@ -63,7 +63,7 @@ function getUserById(req, res, next) {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'User ID not found' });
+        throw new NotFoundError('User not found');
       } else {
         return res.status(200).send({ data: user });
       }
@@ -87,7 +87,7 @@ function updateProfile(req, res, next) {
   )
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'User not found' });
+        throw new NotFoundError('User not found');
       } else {
         return res.status(200).send({ data: user });
       }
@@ -115,7 +115,7 @@ function updateAvatar(req, res, next) {
   )
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'User not found' });
+        throw new NotFoundError('User not found');
       } else {
         return res.status(200).send({ data: user });
       }

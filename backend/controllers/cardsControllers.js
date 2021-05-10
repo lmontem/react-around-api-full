@@ -22,7 +22,7 @@ function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Card not found' });
+        throw new NotFoundError('Card not found');
       } else {
         return res.status(200).send({ message: 'Card deleted' });
       }
@@ -42,7 +42,7 @@ function likeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Card not found' });
+        throw new NotFoundError('Card not found');
       } else {
         return res.status(200).send({ data: card });
       }
@@ -62,7 +62,7 @@ function dislikeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Card not found' });
+        throw new NotFoundError('Card not found');
       } else {
         return res.status(200).send({ data: card });
       }
