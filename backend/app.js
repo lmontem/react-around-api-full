@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
-
+const helmet = require('helmet');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const user = require('./routes/users.js');
@@ -56,7 +56,7 @@ app.get('/crash-test', () => {
 app.use('*', (err) => {
   if (err.name === 'NotFound') { throw new NotFoundError('Requested resource not found'); }
 });
-
+app.use(helmet());
 app.use(errorLogger);
 
 app.use(errors());
