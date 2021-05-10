@@ -19,4 +19,13 @@ class AuthError extends Error {
   }
 }
 
-module.exports = { NotFoundError, InvalidError, AuthError };
+class MongoError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 409;
+  }
+}
+
+module.exports = {
+  NotFoundError, InvalidError, AuthError, MongoError,
+};

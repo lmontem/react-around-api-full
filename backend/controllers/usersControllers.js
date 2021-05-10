@@ -6,7 +6,9 @@ require('cookie-parser');
 
 // const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
-const { NotFoundError, InvalidError, AuthError } = require('../middleware/errorHandling');
+const {
+  NotFoundError, InvalidError, AuthError, MongoError,
+} = require('../middleware/errorHandling');
 
 function getUsers(req, res, next) {
   User.find({})
@@ -23,9 +25,11 @@ function createUser(req, res, next) {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({
+      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+    }))
     .catch((err) => {
-      if (err.code === 11000) { throw new InvalidError('Duplicate email'); }
+      if (err.code === 11000 && err.name === 'MongoError') { throw new MongoError('Duplicate email'); }
       if (err.name === 'ValidationError') { throw new InvalidError('Invalid user'); }
       if (err.name === 'NotFound') { throw new NotFoundError('User not found'); }
     })
