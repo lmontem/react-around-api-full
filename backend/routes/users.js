@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-
 const {
   getUsers, getUserById, updateProfile, updateAvatar,
 } = require('../controllers/usersControllers');

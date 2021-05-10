@@ -44,8 +44,8 @@ function Login(req, res, next) {
           if (!match) {
             return Promise.reject(new Error('Incorrect password or email'));
           }
-          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn : "7d" } );
-          //res.cookie('token', token, { httpOnly: true });
+          const token = jwt.sign({ _id: user._id }, 'secret key', { expiresIn: '7d' });
+          // res.cookie('token', token, { httpOnly: true });
           res.send({ token });
         });
     })
