@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const jsonParser = bodyParser.json();
 const { errors } = require('celebrate');
 const cors = require('cors');
 const user = require('./routes/users.js');
@@ -29,9 +28,9 @@ app.use(cors());
 app.use(user);
 app.use(card);
 app.use(requestLogger);
-
-app.post('/signin', jsonParser, Login);
-app.post('/signup', jsonParser, createUser);
+app.use(bodyParser.json());
+app.post('/signin', Login);
+app.post('/signup', createUser);
 app.get('/users/me', auth, getUserById);
 app.get('/crash-test', () => {
   setTimeout(() => {

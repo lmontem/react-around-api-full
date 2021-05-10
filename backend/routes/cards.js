@@ -1,8 +1,6 @@
 const router = require('express').Router();
-const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
 
-const jsonParser = bodyParser.json();
+const { celebrate, Joi } = require('celebrate');
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cardsControllers');
@@ -15,7 +13,7 @@ router.post('/cards', auth, celebrate({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().uri(),
   }),
-}), jsonParser, createCard);
+}),  createCard);
 
 router.delete('/cards/:cardId', auth, celebrate({
   params: Joi.object().keys({
