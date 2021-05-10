@@ -2,6 +2,7 @@ const express = require('express');
 
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { celebrate, Joi } = require('celebrate');
 
 const { errors } = require('celebrate');
 const cors = require('cors');
@@ -14,6 +15,10 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const {
   Login, createUser, getUserById,
 } = require('./controllers/usersControllers');
+
+const {
+  NotFoundError,
+} = require('./middleware/errorHandling');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -29,8 +34,18 @@ app.use(user);
 app.use(card);
 app.use(requestLogger);
 app.use(bodyParser.json());
-app.post('/signin', Login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), Login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
 app.get('/users/me', auth, getUserById);
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -38,8 +53,8 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+app.use('*', (err) => {
+  if (err.name === 'NotFound') { throw new NotFoundError('Requested resource not found'); }
 });
 
 app.use(errorLogger);
