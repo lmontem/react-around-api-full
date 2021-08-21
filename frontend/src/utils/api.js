@@ -130,7 +130,7 @@ class Api {
 const jwt = localStorage.getItem('jwt');
 
 const api = new Api({
-    baseUrl: "http://127.0.0.1:3000",
+    baseUrl: "https://api.aroundreact.leandrashelton.com",
     headers: {
         "Content-Type": "application/json",
         "Authorization": `token=${jwt}`
